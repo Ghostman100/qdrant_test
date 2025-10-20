@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    ports:
+      - "6333:6333"
+    volumes:
+      - ./qdrant_storage:/qdrant/storage
+    networks:
+      - booknet
+    restart: unless-stopped
+
+  book-embedder:
+    build: .
+    container_name: book-embedder
+    depends_on:
+      - qdrant
+    environment:
+      - QDRANT_URL=http://qdrant:6333   # внутри docker: имя сервиса qdrant
+      - BOOK_PATH=book.txt
+    volumes:
+      - .:/app
+    networks:
+      - booknet
+    restart: "no"
+
+networks:
+  booknet:
+    driver: bridge
