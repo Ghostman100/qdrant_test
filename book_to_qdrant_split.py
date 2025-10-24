@@ -30,7 +30,7 @@ nltk.download('punkt_tab')
 
 time.sleep(3)
 model = SentenceTransformer(MODEL_NAME)
-client = QdrantClient(url=QDRANT_URL, prefer_grpc=False)
+client = QdrantClient(url=QDRANT_URL, prefer_grpc=False, api_key="sk-4d2a1cbb2f8e4cba9a4a2b8cf1f2d3a2")
 
 VECTOR_SIZE = model.get_sentence_embedding_dimension()
 
