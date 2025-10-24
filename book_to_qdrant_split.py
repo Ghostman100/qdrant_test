@@ -7,7 +7,7 @@ import nltk
 from tqdm import tqdm
 from sentence_transformers import SentenceTransformer
 from qdrant_client import QdrantClient
-from qdrant_client.http.models import VectorParams, Distance
+from qdrant_client.http.models import VectorParams, Distance, PointStruct
 
 
 
@@ -15,13 +15,13 @@ from qdrant_client.http.models import VectorParams, Distance
 BOOK_PATH = "v_and_m_1-2.txt"
 BOOK_PATH_2 = "v_and_m_3-4.txt"
 BOOK_PATH_3 = "sherlock_dog.txt"
-# FOLDER_PATH = 'books'
+FOLDER_PATH = 'books'
 
-QDRANT_URL = "http://localhost:6333"
-MODEL_NAME = "deepvk/USER-bge-m3"
+QDRANT_URL = "http://212.41.9.143:6333"
+MODEL_NAME = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 
 SHORT_COLLECTION = "short_fragments"
-LONG_COLLECTION = "sentences"
+LONG_COLLECTION = "sentences2"
 
 BATCH_SIZE = 128
 
@@ -71,11 +71,11 @@ def embed_and_store(collection_name: str, texts: list[str], type_label: str):
         client.upsert(
             collection_name=collection_name,
             points=[
-                {
-                    "id": str(uuid.uuid4()),
-                    "vector": vec.tolist(),
-                    "payload": {"text": batch[j], "type": type_label},
-                }
+                PointStruct(
+                    id=str(uuid.uuid4()),
+                    vector={"fast-paraphrase-multilingual-minilm-l12-v2": vec.tolist()},
+                    payload={"text": batch[j], "type": type_label},
+        )
                 for j, vec in enumerate(vectors)
             ],
         )
@@ -102,8 +102,10 @@ if __name__ == "__main__":
         if filename.endswith(".txt"):
             file_path = os.path.join(FOLDER_PATH, filename)
             try:
+                print(f"Загрузка{filename}")
                 process_book(file_path)
-            except:
+            except Exception as e:
                 print('error asdasd', filename)
+                raise e
 
 

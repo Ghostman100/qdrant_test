@@ -3,10 +3,12 @@ from qdrant_client import QdrantClient
 from qdrant_client.http.models import VectorParams, ScoredPoint, Filter
 from sentence_transformers import SentenceTransformer
 
-client = QdrantClient(url="http://localhost:6333")
+QDRANT_URL = "http://212.41.9.143:6333"
+
+client = QdrantClient(url="http://212.41.9.143:6333")
 model = SentenceTransformer("deepvk/USER-bge-m3")
 
-def search_sentences(query_text, collection="sentences", top_k=5):
+def search_sentences(query_text, collection="sentences2", top_k=5):
     query_vector = model.encode([query_text])[0].tolist()  # список чисел
 
     start_time = time.time()
