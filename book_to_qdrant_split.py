@@ -73,7 +73,7 @@ def embed_and_store(collection_name: str, texts: list[str], type_label: str):
             points=[
                 PointStruct(
                     id=str(uuid.uuid4()),
-                    vector={"fast-paraphrase-multilingual-minilm-l12-v2": vec.tolist()},
+                    vector={MODEL_NAME: vec.tolist()},
                     payload={"text": batch[j], "type": type_label},
         )
                 for j, vec in enumerate(vectors)
